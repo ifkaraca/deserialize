@@ -29,168 +29,176 @@ namespace deserialize
 
     public class AutomationRule
     {
-        public string? message { get; set; }
         public bool active { get; set; }
     }
 
 
     public class Program
     {
-        static List<DateTime> resmi_tatiller = new List<DateTime>
-        {
-            new DateTime(DateTime.Now.Year, 1, 1),   // Yıl Başı
-            new DateTime(DateTime.Now.Year, 4, 23),  // 23 Nisan
-            new DateTime(DateTime.Now.Year, 5, 1),   // 1 Mayıs
-            new DateTime(DateTime.Now.Year, 8, 30),  // 30 Ağustos
-            new DateTime(DateTime.Now.Year, 10, 29), // 29 Ekim
-            new DateTime(DateTime.Now.Year, 5, 19),  // 19 Mayıs
-            new DateTime(DateTime.Now.Year, 7, 15),  // 15 Temmuz
-            new DateTime(DateTime.Now.Year, 4, 9),   // Ramazan
-            new DateTime(DateTime.Now.Year, 4, 10),  // Ramazan
-            new DateTime(DateTime.Now.Year, 4, 11),  // Ramazan
-            new DateTime(DateTime.Now.Year, 6, 15),  // Kurban
-            new DateTime(DateTime.Now.Year, 6, 16),  // Kurban
-            new DateTime(DateTime.Now.Year, 6, 17),  // Kurban
-            new DateTime(DateTime.Now.Year, 6, 18)   // Kurban
-        };
+
 
         public static void Main()
         {
-            string inboxDetailJson = @"{ 
-            ""greeting_enabled"": true, 
-            ""greeting_message"": ""Merhabalar, UzmanCRM olarak sizlere en kisa zamanda donus yapacagiz."", 
-            ""working_hours_enabled"": true, 
-            ""out_of_office_message"": ""We are unavailable at the moment. Leave a message we will respond once we are back."", 
-            ""working_hours"": [ 
-                { 
-                    ""day_of_week"": 0, 
-                    ""closed_all_day"": true, 
-                    ""open_hour"": null, 
-                    ""open_minutes"": null, 
-                    ""close_hour"": null, 
-                    ""close_minutes"": null, 
-                    ""open_all_day"": false 
-                }, 
-                { 
-                    ""day_of_week"": 1, 
-                    ""closed_all_day"": false, 
-                    ""open_hour"": 9, 
-                    ""open_minutes"": 0, 
-                    ""close_hour"": 17, 
-                    ""close_minutes"": 0, 
-                    ""open_all_day"": false 
-                }, 
-                { 
-                    ""day_of_week"": 2, 
-                    ""closed_all_day"": false, 
-                    ""open_hour"": 9, 
-                    ""open_minutes"": 0, 
-                    ""close_hour"": 17, 
-                    ""close_minutes"": 0, 
-                    ""open_all_day"": false 
-                }, 
-                { 
-                    ""day_of_week"": 3, 
-                    ""closed_all_day"": false, 
-                    ""open_hour"": 9, 
-                    ""open_minutes"": 0, 
-                    ""close_hour"": 17, 
-                    ""close_minutes"": 0, 
-                    ""open_all_day"": false 
-                }, 
-                { 
-                    ""day_of_week"": 4, 
-                    ""closed_all_day"": false, 
-                    ""open_hour"": 9, 
-                    ""open_minutes"": 0, 
-                    ""close_hour"": 17, 
-                    ""close_minutes"": 0, 
-                    ""open_all_day"": false 
-                }, 
-                { 
-                    ""day_of_week"": 5, 
-                    ""closed_all_day"": false, 
-                    ""open_hour"": 9, 
-                    ""open_minutes"": 0, 
-                    ""close_hour"": 17, 
-                    ""close_minutes"": 0, 
-                    ""open_all_day"": false 
-                }, 
-                { 
-                    ""day_of_week"": 6, 
-                    ""closed_all_day"": true, 
-                    ""open_hour"": null, 
-                    ""open_minutes"": null, 
-                    ""close_hour"": null, 
-                    ""close_minutes"": null, 
-                    ""open_all_day"": false 
-                } 
-            ] 
-        }";
+            string inboxDetailJson = $@"
+            {{ 
+    ""greeting_enabled"": true, 
+    ""greeting_message"": ""Merhabalar, UzmanCRM olarak sizlere en kisa zamanda donus yapacagiz."", 
+    ""working_hours_enabled"": false, 
+    ""out_of_office_message"": ""We are unavailable at the moment. Leave a message we will respond once we are back."", 
+    ""working_hours"": [ 
+        {{ 
+            ""day_of_week"": 0, 
+            ""closed_all_day"": true, 
+            ""open_hour"": null, 
+            ""open_minutes"": null, 
+            ""close_hour"": null, 
+            ""close_minutes"": null, 
+            ""open_all_day"": false 
+        }}, 
+        {{ 
+            ""day_of_week"": 1, 
+            ""closed_all_day"": false, 
+            ""open_hour"": 9, 
+            ""open_minutes"": 0, 
+            ""close_hour"": 17, 
+            ""close_minutes"": 0, 
+            ""open_all_day"": true 
+        }}, 
+        {{ 
+            ""day_of_week"": 2, 
+            ""closed_all_day"": false, 
+            ""open_hour"": 9, 
+            ""open_minutes"": 0, 
+            ""close_hour"": 17, 
+            ""close_minutes"": 0, 
+            ""open_all_day"": true 
+        }}, 
+        {{ 
+            ""day_of_week"": 3, 
+            ""closed_all_day"": false, 
+            ""open_hour"": 9, 
+            ""open_minutes"": 0, 
+            ""close_hour"": 17, 
+            ""close_minutes"": 0, 
+            ""open_all_day"": true 
+        }}, 
+        {{ 
+            ""day_of_week"": 4, 
+            ""closed_all_day"": false, 
+            ""open_hour"": 9, 
+            ""open_minutes"": 0, 
+            ""close_hour"": 17, 
+            ""close_minutes"": 0, 
+            ""open_all_day"": true 
+        }}, 
+        {{ 
+            ""day_of_week"": 5, 
+            ""closed_all_day"": false, 
+            ""open_hour"": 9, 
+            ""open_minutes"": 0, 
+            ""close_hour"": 17, 
+            ""close_minutes"": 0, 
+            ""open_all_day"": true 
+        }}, 
+        {{ 
+            ""day_of_week"": 6, 
+            ""closed_all_day"": true, 
+            ""open_hour"": null, 
+            ""open_minutes"": null, 
+            ""close_hour"": null, 
+            ""close_minutes"": null, 
+            ""open_all_day"": false 
+        }} 
+    ] 
+}}
+";
 
-            var automationRuleJsonOpen = @"{ 
-            ""message"":""Aktif"", 
+
+
+            var automationRuleJsonOpen = $@"
+        {{ 
             ""active"":true 
-        }";
-            var automationRuleJsonClose = @"{ 
-            ""message"":""Kapalı"", 
-            ""active"":true 
-        }";
+        }}";
 
-            InboxDetail inboxDetail = JsonSerializer.Deserialize<InboxDetail>(inboxDetailJson);
-            AutomationRule automationRuleOpen = JsonSerializer.Deserialize<AutomationRule>(automationRuleJsonOpen);
-            AutomationRule automationRuleClose = JsonSerializer.Deserialize<AutomationRule>(automationRuleJsonClose);
+            var automationRuleJsonClose = $@"
+        {{ 
+            ""active"":false
+        }}";
 
-            
-            Console.WriteLine("Tarih (YYYY-MM-DD):");
-            DateTime tarih = DateTime.Parse(Console.ReadLine());
 
-            Console.WriteLine("Saat (HH:MM):");
-            TimeSpan saat = TimeSpan.Parse(Console.ReadLine());
+            var inboxDetail = JsonSerializer.Deserialize<InboxDetail>(inboxDetailJson);
+            AutomationRule automationRuleOpen = new AutomationRule { active = false };
+            AutomationRule automationRuleClose = new AutomationRule { active = false };
 
-            DayOfWeek gun = tarih.DayOfWeek;
-            bool resmiTatil = resmi_tatiller.Any(rt => rt.Date == tarih.Date);
-            var calismaSaati = inboxDetail.working_hours.FirstOrDefault(w => w.day_of_week == (int)gun);
-
-            if (gun == DayOfWeek.Saturday || gun == DayOfWeek.Sunday)
+            if (inboxDetail != null)
             {
-                
-                Console.WriteLine(automationRuleClose.message);
-                Console.WriteLine(inboxDetail.out_of_office_message);
-            }
-            else if (resmiTatil)
-            {
-                
-                Console.WriteLine(automationRuleClose.message);
-                Console.WriteLine(inboxDetail.out_of_office_message);
-            }
-            else
-            {
-                
-                if (calismaSaati != null && !calismaSaati.closed_all_day)
+                // Tarih ve saat bilgisi alma
+                Console.Write("Tarih (yyyy-MM-dd): ");
+                DateTime date = DateTime.Parse(Console.ReadLine());
+
+                Console.Write("Saat (HH:mm): ");
+                TimeSpan time = TimeSpan.Parse(Console.ReadLine());
+
+               
+                int dayOfWeek = (int)date.DayOfWeek;
+                var todaysWorkingHours = inboxDetail.working_hours.Find(w => w.day_of_week == dayOfWeek);
+
+                if (todaysWorkingHours != null)
                 {
-                    if (saat >= new TimeSpan(calismaSaati.open_hour ?? 0, calismaSaati.open_minutes ?? 0, 0) &&
-                        saat <= new TimeSpan(calismaSaati.close_hour ?? 0, calismaSaati.close_minutes ?? 0, 0))
+                    if(todaysWorkingHours.open_all_day)
                     {
-                        
-                        Console.WriteLine(automationRuleOpen.message);
-                        Console.WriteLine(inboxDetail.greeting_message);
+                        todaysWorkingHours.closed_all_day = false;
+                        //şarta göre yazdırma 
+                        inboxDetail.greeting_enabled = false;
+                        inboxDetail.working_hours_enabled = false;
+                       
+                        TimeSpan openTime = new TimeSpan(todaysWorkingHours.open_hour.Value, todaysWorkingHours.open_minutes.Value, 0);
+                        TimeSpan closeTime = new TimeSpan(todaysWorkingHours.close_hour.Value, todaysWorkingHours.close_minutes.Value, 0);
+
+                        if (time >= openTime && time <= closeTime)
+                        {
+                            automationRuleOpen.active = true;
+                            automationRuleClose.active = false;
+                            //şarta göre yazdırma 
+                            inboxDetail.greeting_enabled = false;
+                            inboxDetail.working_hours_enabled = false;
+                            
+                        }
+                        else
+                        {
+                            automationRuleOpen.active = false;
+                            automationRuleClose.active = true;
+                            //şarta göre yazdırma 
+                            inboxDetail.greeting_enabled = false;
+                            inboxDetail.working_hours_enabled = false;
+                           
+                        }
                     }
                     else
                     {
-                        
-                        Console.WriteLine(automationRuleClose.message);
+                        todaysWorkingHours.closed_all_day = true;
+                        automationRuleOpen.active = false;
+                        automationRuleClose.active = true;
+                        //şarta göre yazdırma 
+                        inboxDetail.greeting_enabled = false;
+                        inboxDetail.working_hours_enabled = false;
+                    }
+                    Console.WriteLine($"automationRuleOpen: {automationRuleOpen.active}");
+                    Console.WriteLine($"automationRuleClose: {automationRuleClose.active}");
+                    Console.WriteLine($"open_all_day: {todaysWorkingHours.open_all_day}");
+                    Console.WriteLine($"closed_all_day: {todaysWorkingHours.closed_all_day}");
+                    if (inboxDetail.greeting_enabled)
+                    {
+                        Console.WriteLine(inboxDetail.greeting_message);
+                    }
+                    if (inboxDetail.working_hours_enabled)
+                    {
                         Console.WriteLine(inboxDetail.out_of_office_message);
                     }
-                }
-                else
-                {
-                    
-                    Console.WriteLine(automationRuleClose.message);
-                    Console.WriteLine(inboxDetail.out_of_office_message);
+
                 }
             }
-
         }
     }
+
 }

@@ -122,13 +122,13 @@ namespace deserialize
 
             var automationRuleJsonClose = $@"
         {{ 
-            ""active"":false
+            ""active"":true
         }}";
 
 
             var inboxDetail = JsonSerializer.Deserialize<InboxDetail>(inboxDetailJson);
-            AutomationRule automationRuleOpen = new AutomationRule { active = false };
-            AutomationRule automationRuleClose = new AutomationRule { active = false };
+            var openRule = JsonSerializer.Deserialize<AutomationRule>(automationRuleJsonOpen);
+            var closeRule = JsonSerializer.Deserialize<AutomationRule>(automationRuleJsonClose);
 
             if (inboxDetail != null)
             {
@@ -142,58 +142,57 @@ namespace deserialize
                
                 int dayOfWeek = (int)date.DayOfWeek;
                 var todaysWorkingHours = inboxDetail.working_hours.Find(w => w.day_of_week == dayOfWeek);
-
-                if (todaysWorkingHours != null)
+                if (todaysWorkingHours.closed_all_day)
                 {
-                    if(todaysWorkingHours.open_all_day)
+                    Console.WriteLine($"closed_all_day: {todaysWorkingHours.closed_all_day}");
+                    if (closeRule.active)
                     {
-                        todaysWorkingHours.closed_all_day = false;
-                        //şarta göre yazdırma 
-                        inboxDetail.greeting_enabled = false;
-                        inboxDetail.working_hours_enabled = false;
-                       
-                        TimeSpan openTime = new TimeSpan(todaysWorkingHours.open_hour.Value, todaysWorkingHours.open_minutes.Value, 0);
-                        TimeSpan closeTime = new TimeSpan(todaysWorkingHours.close_hour.Value, todaysWorkingHours.close_minutes.Value, 0);
-
-                        if (time >= openTime && time <= closeTime)
+                        Console.WriteLine($"automationRuleClose: {closeRule.active}");
+                        if (inboxDetail.working_hours_enabled)
                         {
-                            automationRuleOpen.active = true;
-                            automationRuleClose.active = false;
-                            //şarta göre yazdırma 
-                            inboxDetail.greeting_enabled = false;
-                            inboxDetail.working_hours_enabled = false;
-                            
-                        }
-                        else
-                        {
-                            automationRuleOpen.active = false;
-                            automationRuleClose.active = true;
-                            //şarta göre yazdırma 
-                            inboxDetail.greeting_enabled = false;
-                            inboxDetail.working_hours_enabled = false;
-                           
+                            Console.WriteLine(inboxDetail.out_of_office_message);
                         }
                     }
                     else
                     {
-                        todaysWorkingHours.closed_all_day = true;
-                        automationRuleOpen.active = false;
-                        automationRuleClose.active = true;
-                        //şarta göre yazdırma 
-                        inboxDetail.greeting_enabled = false;
-                        inboxDetail.working_hours_enabled = false;
+                        Console.WriteLine($"automationRuleClose: {closeRule.active}");
                     }
-                    Console.WriteLine($"automationRuleOpen: {automationRuleOpen.active}");
-                    Console.WriteLine($"automationRuleClose: {automationRuleClose.active}");
+                }
+                else
+                {
                     Console.WriteLine($"open_all_day: {todaysWorkingHours.open_all_day}");
-                    Console.WriteLine($"closed_all_day: {todaysWorkingHours.closed_all_day}");
-                    if (inboxDetail.greeting_enabled)
+                    TimeSpan openTime = new TimeSpan(todaysWorkingHours.open_hour.Value, todaysWorkingHours.open_minutes.Value, 0);
+                    TimeSpan closeTime = new TimeSpan(todaysWorkingHours.close_hour.Value, todaysWorkingHours.close_minutes.Value, 0);
+
+                    if (time >= openTime && time <= closeTime)
                     {
-                        Console.WriteLine(inboxDetail.greeting_message);
+                        if(openRule.active)
+                        {
+                            Console.WriteLine($"automationRuleOpen: {openRule.active }");
+                            if(inboxDetail.greeting_enabled)
+                            {
+                                Console.WriteLine(inboxDetail.greeting_message);
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine($"automationRuleOpen: {openRule.active}");
+                        }
                     }
-                    if (inboxDetail.working_hours_enabled)
+                    else
                     {
-                        Console.WriteLine(inboxDetail.out_of_office_message);
+                        if (closeRule.active)
+                        {
+                            Console.WriteLine($"automationRuleClose: {closeRule.active}");
+                            if (inboxDetail.working_hours_enabled)
+                            {
+                                Console.WriteLine(inboxDetail.out_of_office_message);
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine($"automationRuleClose: {closeRule.active}");
+                        }
                     }
 
                 }

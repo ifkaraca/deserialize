@@ -62,7 +62,7 @@ namespace deserialize
             ""open_minutes"": 0, 
             ""close_hour"": 17, 
             ""close_minutes"": 0, 
-            ""open_all_day"": true 
+            ""open_all_day"": false 
         }}, 
         {{ 
             ""day_of_week"": 2, 
@@ -71,7 +71,7 @@ namespace deserialize
             ""open_minutes"": 0, 
             ""close_hour"": 17, 
             ""close_minutes"": 0, 
-            ""open_all_day"": true 
+            ""open_all_day"": false 
         }}, 
         {{ 
             ""day_of_week"": 3, 
@@ -80,7 +80,7 @@ namespace deserialize
             ""open_minutes"": 0, 
             ""close_hour"": 17, 
             ""close_minutes"": 0, 
-            ""open_all_day"": true 
+            ""open_all_day"": false 
         }}, 
         {{ 
             ""day_of_week"": 4, 
@@ -89,7 +89,7 @@ namespace deserialize
             ""open_minutes"": 0, 
             ""close_hour"": 17, 
             ""close_minutes"": 0, 
-            ""open_all_day"": true 
+            ""open_all_day"": false 
         }}, 
         {{ 
             ""day_of_week"": 5, 
@@ -98,7 +98,7 @@ namespace deserialize
             ""open_minutes"": 0, 
             ""close_hour"": 17, 
             ""close_minutes"": 0, 
-            ""open_all_day"": true 
+            ""open_all_day"": false 
         }}, 
         {{ 
             ""day_of_week"": 6, 
@@ -122,7 +122,7 @@ namespace deserialize
 
             var automationRuleJsonClose = $@"
         {{ 
-            ""active"":true
+            ""active"":false
         }}";
 
 
@@ -130,74 +130,116 @@ namespace deserialize
             var openRule = JsonSerializer.Deserialize<AutomationRule>(automationRuleJsonOpen);
             var closeRule = JsonSerializer.Deserialize<AutomationRule>(automationRuleJsonClose);
 
-            if (inboxDetail != null)
+            if (inboxDetail == null)
             {
-                // Tarih ve saat bilgisi alma
-                Console.Write("Tarih (yyyy-MM-dd): ");
-                DateTime date = DateTime.Parse(Console.ReadLine());
+                return;
+            }
+            // Tarih ve saat bilgisi alma
+            Console.Write("Tarih (yyyy-MM-dd): ");
+            DateTime date = DateTime.Parse(Console.ReadLine());
 
-                Console.Write("Saat (HH:mm): ");
-                TimeSpan time = TimeSpan.Parse(Console.ReadLine());
+            Console.Write("Saat (HH:mm): ");
+            TimeSpan time = TimeSpan.Parse(Console.ReadLine());
 
-               
-                int dayOfWeek = (int)date.DayOfWeek;
-                var todaysWorkingHours = inboxDetail.working_hours.Find(w => w.day_of_week == dayOfWeek);
-                if (todaysWorkingHours.closed_all_day)
+
+            int dayOfWeek = (int)date.DayOfWeek;
+            var todaysWorkingHours = inboxDetail.working_hours.Find(w => w.day_of_week == dayOfWeek);
+            if (todaysWorkingHours == null) 
+            { 
+                return;
+            }
+            if (todaysWorkingHours.closed_all_day)
+            {
+                //Console.WriteLine($"closed_all_day: {todaysWorkingHours.closed_all_day}");
+                if(inboxDetail.working_hours_enabled)
                 {
-                    Console.WriteLine($"closed_all_day: {todaysWorkingHours.closed_all_day}");
-                    if (closeRule.active)
-                    {
-                        Console.WriteLine($"automationRuleClose: {closeRule.active}");
-                        if (inboxDetail.working_hours_enabled)
-                        {
-                            Console.WriteLine(inboxDetail.out_of_office_message);
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine($"automationRuleClose: {closeRule.active}");
-                    }
+                    closeRule.active = true;
+                    openRule.active = false;
+                    Console.WriteLine($"automationRuleJsonOpen: {openRule.active}");
+                    Console.WriteLine($"automationRuleJsonClose: {closeRule.active}");
+                   // Console.WriteLine(inboxDetail.out_of_office_message);
                 }
                 else
                 {
-                    Console.WriteLine($"open_all_day: {todaysWorkingHours.open_all_day}");
+                    closeRule.active = false;
+                    openRule.active = false;
+                    Console.WriteLine($"automationRuleJsonOpen: {openRule.active}");
+                    Console.WriteLine($"automationRuleJsonClose: {closeRule.active}");
+                }
+            }
+            else if (!todaysWorkingHours.closed_all_day)
+            {
+               if(todaysWorkingHours.open_all_day)
+                {
+                    //Console.WriteLine($"closed_all_day: {todaysWorkingHours.open_all_day}");
+                    if (inboxDetail.greeting_enabled)
+                    {
+                        closeRule.active = false;
+                        openRule.active = true;
+                        Console.WriteLine($"automationRuleJsonOpen: {openRule.active}");
+                        Console.WriteLine($"automationRuleJsonClose: {closeRule.active}");
+                        // Console.WriteLine(inboxDetail.greeting_message);
+                    }
+                    else
+                    {
+                        closeRule.active = false;
+                        openRule.active = false;
+                        Console.WriteLine($"automationRuleJsonOpen: {openRule.active}");
+                        Console.WriteLine($"automationRuleJsonClose: {closeRule.active}");
+                    }
+                }
+               else if(!todaysWorkingHours.open_all_day)
+                {
                     TimeSpan openTime = new TimeSpan(todaysWorkingHours.open_hour.Value, todaysWorkingHours.open_minutes.Value, 0);
                     TimeSpan closeTime = new TimeSpan(todaysWorkingHours.close_hour.Value, todaysWorkingHours.close_minutes.Value, 0);
 
                     if (time >= openTime && time <= closeTime)
                     {
-                        if(openRule.active)
+                        //Console.WriteLine("Çalışma saatleri içindeyiz");
+                        if (inboxDetail.greeting_enabled)
                         {
-                            Console.WriteLine($"automationRuleOpen: {openRule.active }");
-                            if(inboxDetail.greeting_enabled)
-                            {
-                                Console.WriteLine(inboxDetail.greeting_message);
-                            }
+                            closeRule.active = false;
+                            openRule.active = true;
+                            Console.WriteLine($"automationRuleJsonOpen: {openRule.active}");
+                            Console.WriteLine($"automationRuleJsonClose: {closeRule.active}");
+                            // Console.WriteLine(inboxDetail.greeting_message);
                         }
                         else
                         {
-                            Console.WriteLine($"automationRuleOpen: {openRule.active}");
+                            closeRule.active = false;
+                            openRule.active = false;
+                            Console.WriteLine($"automationRuleJsonOpen: {openRule.active}");
+                            Console.WriteLine($"automationRuleJsonClose: {closeRule.active}");
                         }
                     }
                     else
                     {
-                        if (closeRule.active)
+                        if (inboxDetail.working_hours_enabled)
                         {
-                            Console.WriteLine($"automationRuleClose: {closeRule.active}");
-                            if (inboxDetail.working_hours_enabled)
-                            {
-                                Console.WriteLine(inboxDetail.out_of_office_message);
-                            }
+                            closeRule.active = true;
+                            openRule.active = false;
+                            Console.WriteLine($"automationRuleJsonOpen: {openRule.active}");
+                            Console.WriteLine($"automationRuleJsonClose: {closeRule.active}");
+                            // Console.WriteLine(inboxDetail.out_of_office_message);
                         }
                         else
                         {
-                            Console.WriteLine($"automationRuleClose: {closeRule.active}");
+                            closeRule.active = false;
+                            openRule.active = false;
+                            Console.WriteLine($"automationRuleJsonOpen: {openRule.active}");
+                            Console.WriteLine($"automationRuleJsonClose: {closeRule.active}");
                         }
                     }
-
                 }
+                else
+                {
+                    Console.WriteLine("Veri bulunamadı");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Veri bulunamadı");
             }
         }
     }
-
 }
